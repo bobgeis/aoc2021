@@ -184,5 +184,56 @@ macro `..=!`*(lhs: untyped, rhs: typed): auto =
         result.add(quote do:
           `v` = `t`.`v`)
 
+###
 
+when isMainModule:
+  import math, strutils
+  import bedrock
 
+  # this needs to be at the top level or trying to export will fail
+  # abs.liftToMap(absMap, X = true)
+  # `+`.liftToMap2(plusMap2, X = true)
+  # block:
+  #   absMap.liftToMap(absMapMap)
+  #   assert @[1, -2, 3].absMap == @[1, 2, 3]
+  #   assert @[@[1, -2, 3], @[-3, -4]].absMapMap == @[@[1, 2, 3], @[3, 4]]
+
+  # block:
+  #   `+`.liftToMap2(plusMap2)
+  #   `+`.liftToMap2padded(plusMap2p)
+  #   assert @[-1, -2, 3].plusMap2(@[4, 6, 2]) == @[3, 4, 5]
+  #   assert @[-1, -2, 3].plusMap2p(@[4, 6, 2, 2, 3, 4, 5], pad = 1) == @[3, 4, 5,
+  #       3, 4, 5, 6]
+
+  # block:
+  #   between[int].liftToMap3(btMap)
+  #   assert @[1, 2, 3].btMap(@[4, 6, 2], @[-3, 1, 1]) == @[true, true, false]
+  #   proc foo(x: string, y: int, z: float): int64 = (x.parseInt + y +
+  #       z.floor.int).int64
+  #   assert foo("3", 2, 3.0) == 8'i64
+  #   foo.liftToMap3(fooMap)
+  #   assert fooMap(@["3", "5"], @[2, 3], @[2.0, 10.0]) == @[7'i64, 18]
+
+  block:
+    type
+      Foo = object
+        x, y, z: int
+    let foo = Foo(x: 3, y: 5, z: 8)
+    {x, y, z: zCoord} ..= foo
+    assert [x, y, zCoord] == [3, 5, 8]
+    [a, b, _, _, e] ..= @[5, 6, 7, 8, 9, 10, 11, 12, 13]
+    assert [a, b, e] == [5, 6, 9]
+
+  block:
+    let s = @[1, 2, 3, 4]
+    [a, b, _, c] ..=^ s
+    a += b + c
+    assert a == 7
+
+  block:
+    var x, y, z: int = 0
+    let coords = [5, 7, 12]
+    [x, y, z] ..=! coords
+    assert x + y == z
+
+  echo "shenanigans asserts passed"

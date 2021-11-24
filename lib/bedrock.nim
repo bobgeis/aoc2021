@@ -123,6 +123,11 @@ template doit*(s: typed, op: untyped): untyped =
   for it {.inject.} in items(s):
     op
 
+proc flatten*[T](ss: seq[seq[T]]): seq[T] =
+  ## Take a seq of seq of T and return a seq of T.
+  for s in ss:
+    for t in s:
+      result.add t
 
 proc groupsOf*[T](s: seq[T], g: Positive): seq[seq[T]] =
   ## Chop a seq `s` into a seq of subseqs each of length `g` (the last one may be shorter)
@@ -137,4 +142,67 @@ proc groupsOf*[T](s: seq[T], g: Positive): seq[seq[T]] =
       sub = newSeqOfCap[T](g)
       i = 0
   if sub.len > 0: result.add sub
+
+
+when isMainModule:
+
+  block:
+    assert @[@[1, 2, 3], @[4, 5, 6]].flatten == @[1, 2, 3, 4, 5, 6]
+
+  # block:
+  #   assert 5.pmod(3) == 2 # same as 5 mod 3
+  #   assert pmod(-5, 3) == 1 # -5 mod 3 would give -2
+  #   assert 5.pmod(-3) == -1 # 5 mod -3 would give 2
+  #   assert pmod(-5, -3) == -2 # same as 5 mod 3
+
+  # block:
+  #   assert 9.pdiv(2) == 4 # same as 9 div 2
+  #   assert pdiv(-9, 2) == -5 # -9 div 2 would give -4
+  #   assert 9.pdiv(-2) == -5 # 9 div -2 would give -4
+
+  # block:
+  #   assert imod(138, 191) == 18
+  #   assert imod(38, 191) == 186
+  #   assert imod(23, 120) == 47
+
+  #   assert pow(3, 2, 4) == 1
+  #   assert pow(10, 9, 6) == 4
+  #   assert pow(450, 768, 517) == 34
+
+  # block:
+  #   let
+  #     arr = [2, 4, 6, 8]
+  #     tab = {'a': 10, 'b': -2, 'c': 5}.toTable
+  #   assert arr.toSeq.mapit(it + 1) == @[3, 5, 7, 9]
+  #   assert arr.toSeq(pairs).mapit(it[1] - 1) == @[1, 3, 5, 7]
+  #   assert tab.toSeq(values).mapit(it + 100) == @[110, 98, 105]
+
+  block:
+    let
+      a = 10
+      b = -5
+    assert 5.bt(a, b)
+    assert 5.bt(b, a)
+    assert not 11.bt(a, b)
+    assert not (-6).bt(a, b)
+    assert 10.bt(a, b)
+    assert 10.bt(b, a)
+
+  block:
+    var
+      x = 5
+      s: seq[int] = @[]
+    for i in 0.countbetween(x): s.add i
+    x -= 10
+    for i in 0.countbetween(x): s.add i
+    for i in 0.countbetween(x, 2): s.add i
+    assert s == @[0, 1, 2, 3, 4, 5, 0, -1, -2, -3, -4, -5, 0, -2, -4]
+
+  block:
+    let t = @[3, 5]
+    var v: seq[int] = @[]
+    t.doit(v.add it)
+    assert t == v
+
+  echo "bedrock asserts passed"
 

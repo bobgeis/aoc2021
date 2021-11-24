@@ -23,6 +23,24 @@ switch("verbosity", "0")
 
 --gc: arc # swap in --gc:orc if you get leaks
 
+proc setFast() =
+  --d: fast
+  --d: release
+  --d: danger
+  --opt: speed
+  --passC: "-flto"
+  --passL: "-flto"
+
+if defined(fast):
+  setFast()
+
+proc setCheck() =
+  --d: check
+  --hints: on
+  --warnings: on
+
+if defined(check):
+  setCheck()
 
 proc findNimFile(f:string):string =
   if f.fileExists: return f
