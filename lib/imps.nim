@@ -13,8 +13,8 @@ import std/[algorithm, deques, math, memfiles, options,
 import pkg/[itertools, memo, stint]
 
 # local lib modules: src/lib/
-# import lib/[aocutils, bedrock, graphwalk, shenanigans, timetemple, vecna]
-import lib/[aocutils, bedrock, graphwalk, shenanigans, vecna]
+import lib/[aocutils, bedrock, graphwalk, shenanigans, timetemple, vecna]
+# import lib/[aocutils, bedrock, graphwalk, shenanigans, vecna]
 
 
 export algorithm, deques, math, memfiles, options,
@@ -24,5 +24,5 @@ export algorithm, deques, math, memfiles, options,
 
 export itertools, memo, stint
 
-# export aocutils, bedrock, graphwalk, shenanigans, timetemple, vecna
-export aocutils, bedrock, graphwalk, shenanigans, vecna
+export aocutils, bedrock, graphwalk, shenanigans, timetemple, vecna
+# export aocutils, bedrock, graphwalk, shenanigans, vecna

@@ -1,7 +1,7 @@
 ## This contains procs and templates useful for this advent of code repo.
 import std/[monotimes, os, sequtils, strformat, strutils, tables, times]
-# import lib/[bedrock, timetemple]
-import lib/[bedrock]
+import lib/[bedrock, timetemple]
+# import lib/[bedrock]
 
 const
   inputDir* = "in"
