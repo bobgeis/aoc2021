@@ -1,7 +1,7 @@
 
 # Advent of Code 2021
 
-[This repo]() contains soluations for [Advent of Code 2021](https://adventofcode.com/2021)) written in [nim](https://nim-lang.org/).
+[This repo](https://github.com/bobgeis/aoc2021) contains soluations for [Advent of Code 2021](https://adventofcode.com/2021) written in [nim](https://nim-lang.org/).
 
 ## Links
 
