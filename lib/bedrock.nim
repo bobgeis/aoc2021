@@ -11,7 +11,7 @@ type
     OrderedTable[U, V] or OrderedTableRef[U, V]
   SomeCountTable*[T] = CountTable[T] or CountTableRef[T]
 
-proc spy*[T](t: T, msg = ""): T =
+proc spy*[T](t: T, msg = ""): T {.inline.} =
   ## For when you want to echo something in the middle of a chain of proc calls.
   echo &"{msg}{$t}"
   return t
@@ -24,7 +24,7 @@ proc err*(msg = "Error!") =
   ## easy terse error
   raise newException(Exception, msg)
 
-proc toSeqChar*(s: string): seq[char] = cast[seq[char]](s)
+proc toSeqChar*(s: string): seq[char] {.inline.} = cast[seq[char]](s)
 
 proc parseInt*(c: char): int = parseInt($c)
 
@@ -106,7 +106,7 @@ proc wrap*[A: SomeNumber](v, min, max: A): A {.inline.} =
 proc wrap*[A: SomeNumber](v, max: A): A {.inline.} =
   return wrap(v, A.default, max)
 
-proc lerp*[A: SomeFloat](a, b, v: A): A =
+proc lerp*[A: SomeFloat](a, b, v: A): A {.inline.} =
   ## a and b are the endpoints, v is 0-1 the transition a -> b
   a * (1.0.A - v) + b * v
 

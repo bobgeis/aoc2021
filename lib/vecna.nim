@@ -42,6 +42,7 @@ template `w=`*[N, A](a: Vec[N, A]; b: A): untyped = a[3] = b
 
 DistributeSymbols([Name, Fn], [[origin, default], [lowest, low], [highest, high]]):
   proc Name*[N, A](): Vec[N, A] =
+    ## origin, lowest, highest gets an N-dim vector with at the origin, or with the lowest or highest possible values
     for i in 0..result.high:
       result[i] = Fn(A)
 
@@ -49,6 +50,7 @@ DistributeSymbols([Name, Fn], [[origin, default], [lowest, low], [highest, high]
 
 DistributeSymbols([Name, Num], [[toVec2, 2], [toVec3, 3], [toVec4, 4]]):
   proc Name*[A](v: openArray[A]; def: A = A.default): Vec[Num, A] =
+    ## Extend or truncate a vector, with optional default value
     for i in 0..result.high:
       result[i] = v.getOr(i, def)
 
@@ -56,17 +58,21 @@ DistributeSymbols([Name, Num], [[toVec2, 2], [toVec3, 3], [toVec4, 4]]):
 
 DistributeSymbol(Op, [`+=`, `-=`, `*=`, `/=`]):
   proc Op*[N, A](a: var Vec[N, A]; b: Vec[N, A]) =
+    ## Mutate each item of the vector, eg: a[i] = Op(a[i],b[i])
     for i in 0..a.high:
       Op(a[i], b[i])
   proc Op*[N, A](a: var Vec[N, A]; b: A) =
+    ## Mutate each item of the vector, eg: a[i] = Op(a[i],b)
     for i in 0..a.high:
       Op[a[i], b]
 
 DistributeSymbol(Op, [`+`, `-`, `*`, `/`, `mod`, `div`]):
   proc Op*[N, A](a, b: Vec[N, A]): Vec[N, A] =
+    ## Apply to each item of the vector, eg: result[i] = Op(a[i],b[i])
     for i in 0..a.high:
       result[i] = Op(a[i], b[i])
   proc Op*[N, A](a: Vec[N, A]; b: A): Vec[N, A] =
+    ## Apply to each item of the vector, eg: result[i] = Op(a[i],b)
     for i in 0..a.high:
       result[i] = Op(a[i], b)
 
@@ -78,6 +84,7 @@ proc `min=`*[N, A](a: var Vec[N, A]; b: Vec[N, A]) =
     a[i] = a[i].min(b[i])
 
 proc lerp*[N; A: SomeFloat](a, b: Vec[N, A]; v: A): Vec[N,A] {.inline.} =
+  ## linear interpolate between two vectors
   a * (1.0.A - v) + b * v
 
 # geometry
@@ -112,6 +119,7 @@ proc mdist*[N, A](a: Vec[N, A]): A =
     result += a[i].abs
 
 proc mdist*[N, A](a, b: Vec[N, A]): A =
+  ## Manhattan distance between two vectors
   for i in 0..a.high:
     result += (b[i] - a[i]).abs
 
@@ -152,20 +160,32 @@ proc reversed*[N, A](a: Vec[N, A]): Vec[N, A] =
     result[i-1] = a[^1]
 
 proc reverse*[N, A](a: var Vec[N, A]) =
-  ## reverse a var vector in place
+  ## Reverse a var vector in place.
   var swap: A
   for i in 1..(a.len div 2):
     swap = a[i-1]
     a[i-1] = a[^i]
     a[^i] = swap
 
-proc angle*[A](a: Vec[2, A]): float {.inline.} = arctan2(a.y.float, a.x.float)
-proc angle*[A](a, b: Vec[2, A]): float {.inline.} = arctan2((b.y-a.y).float, (b.x-a.x).float)
-proc angle*[N, A](a, b: Vec[N, A]): float {.inline.} = arccos( (a *. b) / (a.mag * b.mag))
+proc angle*[A](a: Vec[2, A]): float {.inline.} =
+  ## Get the angle a 2D vector makes with the origin.
+  arctan2(a.y.float, a.x.float)
 
-proc ratoxy*[A](ra: Vec[2,A]): Vec[2,A] {.inline.} = [ra[0] * cos(ra[1]), ra[0] * sin(ra[1])]
+proc angle*[A](a, b: Vec[2, A]): float {.inline.} =
+  ## Get the angle between two 2D vectors.
+  arctan2((b.y-a.y).float, (b.x-a.x).float)
 
-proc xytora*[A](xy: Vec[2,A]): Vec[2,A] {.inline.} = [xy.mag, xy.angle]
+proc angle*[N, A](a, b: Vec[N, A]): float {.inline.} =
+  ## Get the angle between two N-dim vectors.
+  arccos( (a *. b) / (a.mag * b.mag))
+
+proc ratoxy*[A](ra: Vec[2,A]): Vec[2,A] {.inline.} =
+  ## Turn a 2D vector of polar coordinates into cartesian coordinates.
+  [ra[0] * cos(ra[1]), ra[0] * sin(ra[1])]
+
+proc xytora*[A](xy: Vec[2,A]): Vec[2,A] {.inline.} =
+  ## Turn a 2D vector in cartesian cooardinates into polar coordinates
+  [xy.mag, xy.angle]
 
 proc aabb*[N, A](a, c1, c2: Vec[N, A]): bool =
   ## Is point `a` within an axis-aligned bounding box described by two opposing corners `c1` and `c2`?
@@ -349,20 +369,24 @@ proc getMinMax*[N](hs: SomeSet[Vec[N, int]]): (Vec[N, int], Vec[N, int]) =
     maxs.max = item
   return (mins, maxs)
 
+# Walking sparse collections
 
 iterator grid*[T](t: SomeTab2i[T]): Vec2i =
+  ## Walk a grid created from the keys of a sparse collection.
   let (mins, maxs) = t.getMinMax
   for y in mins.y..maxs.y:
     for x in mins.x..maxs.x:
       yield [x, y]
 
 iterator grid*(t: SomeSet2i or SomeCtab2i): Vec2i =
+  ## Walk a grid created from the keys of a sparse collection.
   let (mins, maxs) = t.getMinMax
   for y in mins.y..maxs.y:
     for x in mins.x..maxs.x:
       yield [x, y]
 
 iterator grid*[T](t: SomeTab3i[T]): Vec3i =
+  ## Walk a grid created from the keys of a sparse collection.
   let (mins, maxs) = t.getMinMax
   for z in mins.z..maxs.z:
     for y in mins.y..maxs.y:
@@ -370,6 +394,7 @@ iterator grid*[T](t: SomeTab3i[T]): Vec3i =
         yield [x, y, z]
 
 iterator grid*(t: SomeSet3i or SomeCtab3i): Vec3i =
+  ## Walk a grid created from the keys of a sparse collection.
   let (mins, maxs) = t.getMinMax
   for z in mins.z..maxs.z:
     for y in mins.y..maxs.y:
@@ -377,6 +402,7 @@ iterator grid*(t: SomeSet3i or SomeCtab3i): Vec3i =
         yield [x, y, z]
 
 iterator grid*[T](t: SomeTab4i[T]): Vec4i =
+  ## Walk a grid created from the keys of a sparse collection.
   let (mins, maxs) = t.getMinMax
   for w in mins.w..maxs.w:
     for z in mins.z..maxs.z:
@@ -385,6 +411,7 @@ iterator grid*[T](t: SomeTab4i[T]): Vec4i =
           yield [x, y, z, w]
 
 iterator grid*(t: SomeSet4i or SomeCtab4i): Vec4i =
+  ## Walk a grid created from the keys of a sparse collection.
   let (mins, maxs) = t.getMinMax
   for w in mins.w..maxs.w:
     for z in mins.z..maxs.z:
@@ -395,6 +422,7 @@ iterator grid*(t: SomeSet4i or SomeCtab4i): Vec4i =
 # procs for drawing to console
 
 proc drawTab*[T](t: SomeTab2i[T]; p: proc(v: Vec2i): char): string =
+  ## Turn a sparse collection into a string for echoing
   var yPrev = int.high
   for v in t.grid():
     if v.y != yPrev:
@@ -403,6 +431,7 @@ proc drawTab*[T](t: SomeTab2i[T]; p: proc(v: Vec2i): char): string =
     result.add p(v)
 
 proc drawTab*(t: SomeCtab2i; p: proc(v: Vec2i): char): string =
+  ## Turn a sparse collection into a string for echoing
   var yPrev = int.high
   for v in t.grid():
     if v.y != yPrev:
@@ -411,6 +440,7 @@ proc drawTab*(t: SomeCtab2i; p: proc(v: Vec2i): char): string =
     result.add p(v)
 
 proc drawTab*[T](t: SomeTab3i[T]; p: proc(v: Vec3i): char): string =
+  ## Turn a sparse collection into a string for echoing
   var zPrev, yPrev = int.high
   for v in t.grid():
     if v.z != zPrev:
@@ -422,6 +452,7 @@ proc drawTab*[T](t: SomeTab3i[T]; p: proc(v: Vec3i): char): string =
     result.add p(v)
 
 proc drawTab*(t: SomeCtab3i; p: proc(v: Vec3i): char): string =
+  ## Turn a sparse collection into a string for echoing
   var zPrev, yPrev = int.high
   for v in t.grid():
     if v.z != zPrev:
