@@ -106,5 +106,8 @@ task drf, "Compile(opt:speed) and run a day. eg: `nim drf 01`":
 
 task dt, "Compile(opt:speed) and time a day. eg `nim dt 01`":
   dcfTask()
-  excho &"time out/run"
+  let
+    (switches,args) = parseArgs()
+    argStr = args[1..args.high].join(" ")
+  excho &"time out/run {argStr}"
 

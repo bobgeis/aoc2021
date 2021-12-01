@@ -10,6 +10,12 @@ const
 proc inputPath*(day: string,suffix:string=""): string = &"{inputDir}/i{day}{suffix}.txt"
 
 proc getCliPaths*(day: string): seq[string] =
+  ## Tries to find the input files to evaluate.
+  ## - nothing or "i" or "day" uses the default path for `day`
+  ## - multiple args will be run in sequence
+  ## example cli commands:
+  ##   nim dr 01 # runs the default input file for day 01
+  ##   nim drf 01 i t1 t2 # runs input file and two test files
   var args = commandLineParams()
   if args.len == 0: args.add day
   for arg in args:
@@ -19,10 +25,13 @@ proc getCliPaths*(day: string): seq[string] =
       result.add arg.inputPath
     elif day.inputPath(arg).fileExists:
       result.add day.inputPath(arg)
+    elif (arg == "i" or arg == "day") and day.inputPath.fileExists:
+      result.add day.inputPath
     else:
       echo &"Could not find file {arg} or {arg.inputPath} or {day.inputpath(arg)}"
 
-proc readIntLines*(path: string): seq[int] = path.getlines.map(parseInt)
+proc readIntLines*(path: string): seq[int] =
+  path.getlines.map(parseInt)
 
 var answers: array[1..2, Table[string, int]] = [
   initTable[string, int](),
@@ -42,10 +51,28 @@ type
     day: string
     path: string
     res: array[2, int]
+  TimedRunResult* = tuple
+    day: string
+    path: string
+    res: array[2, int]
     dur: array[4, Duration]
 
 template makeRunProc*(): untyped =
   proc run*(path: string = inPath): RunResult =
+    let input = part0(path)
+    var res1: int
+    when not defined(skipPart1):
+      res1 = part1(input)
+    var res2: int
+    when not defined(skipPart2):
+      res2 = part2(input)
+    when not defined(skipPart1):
+      checkpart(1, res1, path)
+    when not defined(skipPart2):
+      checkpart(2, res2, path)
+    return (day: day, path: path, res: [res1, res2])
+
+  proc timedRun*(path: string = inPath): TimedRunResult =
     timevar durall:
       timevar dur0:
         let input = part0(path)
@@ -63,7 +90,12 @@ template makeRunProc*(): untyped =
       checkpart(2, res2, path)
     return (day: day, path: path, res: [res1, res2], dur: [dur0, dur1, dur2, durAll])
 
-proc pretty*(d: Duration): string =
+proc echoRR*(rr: RunResult) =
+  echo &"Day {rr.day} at #{githash} for {rr.path}"
+  echo &"Part1: {rr.res[0]}"
+  echo &"Part2: {rr.res[1]}"
+
+proc prettyTime*(d: Duration): string =
   let parts = d.toParts
   const units = ["ns", "us", "ms", "s", "m"]
   for i in Nanoseconds..Seconds:
@@ -71,18 +103,18 @@ proc pretty*(d: Duration): string =
   if parts[Minutes] > 0:
     result = &"{parts[Minutes]:>3}{units[Minutes.ord]} {result}"
 
-proc echoRR*(rr: RunResult) =
+proc echoTRR*(rr: TimedRunResult) =
   echo &"Day {rr.day} at #{githash} for {rr.path}"
   echo &"Part1: {rr.res[0]}"
   echo &"Part2: {rr.res[1]}"
   when defined(release):
     echo "Times:"
-    echo &"Part0: {rr.dur[0].pretty}"
+    echo &"Part0: {rr.dur[0].prettyTime}"
     when not defined(skipPart1):
-      echo &"Part1: {rr.dur[1].pretty}"
+      echo &"Part1: {rr.dur[1].prettyTime}"
     when not defined(skipPart2):
-      echo &"Part2: {rr.dur[2].pretty}"
-    echo &"Total: {rr.dur[3].pretty}"
+      echo &"Part2: {rr.dur[2].prettyTime}"
+    echo &"Total: {rr.dur[3].prettyTime}"
 
 
 
