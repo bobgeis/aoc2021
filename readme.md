@@ -44,6 +44,8 @@ ___
 ## d01
 [Link](https://adventofcode.com/2021/day/1)
 
+The first task is pretty straightfoward arithmetic. It's mostly a chance for people to make sure their setup is working.
+
 <!-- ___ -->
 <!-- ## d02 -->
 <!-- [Link](https://adventofcode.com/2021/day/2) -->
