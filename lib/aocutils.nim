@@ -17,7 +17,6 @@ proc getCliPaths*(day: string): seq[string] =
   ##   nim dr 01 # runs the default input file for day 01
   ##   nim drf 01 i t1 t2 # runs input file and two test files
   var args = commandLineParams()
-  if args.len == 0: args.add day
   for arg in args:
     if arg.fileExists:
       result.add arg
@@ -27,8 +26,11 @@ proc getCliPaths*(day: string): seq[string] =
       result.add day.inputPath(arg)
     elif (arg == "i" or arg == "day") and day.inputPath.fileExists:
       result.add day.inputPath
+    elif (arg == "time"): continue
     else:
       echo &"Could not find file {arg} or {arg.inputPath} or {day.inputpath(arg)}"
+  if result.len == 0:
+    result.add day.inputPath
 
 proc readIntLines*(path: string): seq[int] =
   path.getlines.map(parseInt)
@@ -57,7 +59,40 @@ type
     res: array[2, int]
     dur: array[4, Duration]
 
-template makeRunProc*(): untyped =
+proc echoRR*(rr: RunResult) =
+  echo &"Day {rr.day} at #{githash} for {rr.path}"
+  echo &"Part1: {rr.res[0]}"
+  echo &"Part2: {rr.res[1]}"
+
+proc prettyDur*(d: Duration): string =
+  let parts = d.toParts
+  const units = ["ns", "us", "ms", "s", "m"]
+  for i in Nanoseconds..Seconds:
+    result = &"{parts[i]:>3}{units[i.ord]} {result}"
+  if parts[Minutes] > 0:
+    result = &"{parts[Minutes]:>3}{units[Minutes.ord]} {result}"
+
+proc echoTRR*(trr: TimedRunResult) =
+  echo &"Day {trr.day} at #{githash} for {trr.path}"
+  echo &"Part1: {trr.res[0]}"
+  echo &"Part2: {trr.res[1]}"
+  echo "Times:"
+  echo &"Part0: {trr.dur[0].prettyDur}"
+  when not defined(skipPart1):
+    echo &"Part1: {trr.dur[1].prettyDur}"
+  when not defined(skipPart2):
+    echo &"Part2: {trr.dur[2].prettyDur}"
+  echo &"Total: {trr.dur[3].prettyDur}"
+
+proc echoTRRshort*(trr: TimedRunResult) =
+  echo &"Day {trr.day}: {trr.dur[3].prettyDur}"
+
+template makeRunProc*(day:string): untyped =
+  ## Generate a run proc and timedrun proc
+  ## from the day's part1 and part2 functions,
+  ## and if the module is main, then run the proc
+  ## and echo the output.
+
   proc run*(path: string = inPath): RunResult =
     let input = part0(path)
     var res1: int
@@ -90,31 +125,8 @@ template makeRunProc*(): untyped =
       checkpart(2, res2, path)
     return (day: day, path: path, res: [res1, res2], dur: [dur0, dur1, dur2, durAll])
 
-proc echoRR*(rr: RunResult) =
-  echo &"Day {rr.day} at #{githash} for {rr.path}"
-  echo &"Part1: {rr.res[0]}"
-  echo &"Part2: {rr.res[1]}"
-
-proc prettyDur*(d: Duration): string =
-  let parts = d.toParts
-  const units = ["ns", "us", "ms", "s", "m"]
-  for i in Nanoseconds..Seconds:
-    result = &"{parts[i]:>3}{units[i.ord]} {result}"
-  if parts[Minutes] > 0:
-    result = &"{parts[Minutes]:>3}{units[Minutes.ord]} {result}"
-
-proc echoTRR*(rr: TimedRunResult) =
-  echo &"Day {rr.day} at #{githash} for {rr.path}"
-  echo &"Part1: {rr.res[0]}"
-  echo &"Part2: {rr.res[1]}"
-  echo "Times:"
-  echo &"Part0: {rr.dur[0].prettyDur}"
-  when not defined(skipPart1):
-    echo &"Part1: {rr.dur[1].prettyDur}"
-  when not defined(skipPart2):
-    echo &"Part2: {rr.dur[2].prettyDur}"
-  echo &"Total: {rr.dur[3].prettyDur}"
-
-
-
-
+  when isMainModule:
+    if "time" in commandLineParams():
+      getCliPaths(day).doit(it.timedrun.echoTRR)
+    else:
+      getCliPaths(day).doit(it.run.echoRR)

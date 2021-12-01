@@ -19,5 +19,4 @@ proc part1*(input: seq[string]): int =
 proc part2*(input: seq[string]): int =
   result = 0
 
-makeRunProc()
-when isMainModule: getCliPaths(day).doit(it.run.echoRR)
+makeRunProc(day)

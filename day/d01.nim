@@ -28,5 +28,4 @@ proc part2*(input: seq[int]): int =
     curr = input[i] + input[i-1] + input[i-2]
     if curr > last: inc result
 
-makeRunProc()
-when isMainModule: getCliPaths(day).doit(it.run.echoRR)
+makeRunProc(day)

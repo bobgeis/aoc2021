@@ -93,9 +93,9 @@ macro createTimedRunAll():untyped =
   result = newStmtList(quote do:
     proc timedRunAll() =
       echo &"Advent of Code 2021. All days at #{githash}"
-      let rrs = `runexpr`
-      for rr in rrs:
-        rr.echoTRR)
+      let trrs = `runexpr`
+      for trr in trrs:
+        trr.echoTRRshort)
   # echo result.treeRepr
   # echo result.repr
 
@@ -103,8 +103,7 @@ createRunAll
 createTimedRunAll
 
 when isMainModule:
-  let args = commandLineParams()
-  if args.len > 0 and args[0] == "time":
+  if "time" in commandLineParams():
     timedRunAll()
   else:
     runAll()
