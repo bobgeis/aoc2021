@@ -95,7 +95,7 @@ proc echoRR*(rr: RunResult) =
   echo &"Part1: {rr.res[0]}"
   echo &"Part2: {rr.res[1]}"
 
-proc prettyTime*(d: Duration): string =
+proc prettyDur*(d: Duration): string =
   let parts = d.toParts
   const units = ["ns", "us", "ms", "s", "m"]
   for i in Nanoseconds..Seconds:
@@ -107,14 +107,13 @@ proc echoTRR*(rr: TimedRunResult) =
   echo &"Day {rr.day} at #{githash} for {rr.path}"
   echo &"Part1: {rr.res[0]}"
   echo &"Part2: {rr.res[1]}"
-  when defined(release):
-    echo "Times:"
-    echo &"Part0: {rr.dur[0].prettyTime}"
-    when not defined(skipPart1):
-      echo &"Part1: {rr.dur[1].prettyTime}"
-    when not defined(skipPart2):
-      echo &"Part2: {rr.dur[2].prettyTime}"
-    echo &"Total: {rr.dur[3].prettyTime}"
+  echo "Times:"
+  echo &"Part0: {rr.dur[0].prettyDur}"
+  when not defined(skipPart1):
+    echo &"Part1: {rr.dur[1].prettyDur}"
+  when not defined(skipPart2):
+    echo &"Part2: {rr.dur[2].prettyDur}"
+  echo &"Total: {rr.dur[3].prettyDur}"
 
 
 

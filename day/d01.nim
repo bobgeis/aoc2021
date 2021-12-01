@@ -2,7 +2,7 @@ import lib/[imps]
 
 const
   day = "01"
-  inPath = inputPath(day)
+  inPath* = inputPath(day)
   t1path = inputPath(day,"t1")
 
 inpath.part1is 1184
