@@ -35,6 +35,12 @@ proc getlines*(path: string): seq[string] =
   for line in f.lines:
     result.add line
 
+template withLines*(path: string, body: untyped): typed =
+  var f = memfiles.open(path)
+  for line {.inject.} in f.lines:
+    body
+  f.close
+
 proc parselines*[T](path: string, cb: (string)->T): seq[T] =
   ## Parse the lines of a file using a callback
   var f = memfiles.open(path)

@@ -64,7 +64,7 @@ DistributeSymbol(Op, [`+=`, `-=`, `*=`, `/=`]):
   proc Op*[N, A](a: var Vec[N, A]; b: A) =
     ## Mutate each item of the vector, eg: a[i] = Op(a[i],b)
     for i in 0..a.high:
-      Op[a[i], b]
+      Op(a[i], b)
 
 DistributeSymbol(Op, [`+`, `-`, `*`, `/`, `mod`, `div`]):
   proc Op*[N, A](a, b: Vec[N, A]): Vec[N, A] =
