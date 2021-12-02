@@ -1,4 +1,5 @@
 import lib/[imps]
+# https://adventofcode.com/2021/day/2
 
 const
   day = "02"

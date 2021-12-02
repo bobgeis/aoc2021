@@ -6,6 +6,7 @@ const githash = staticexec "git rev-parse --short HEAD"
 
 const days = [
   "d01",
+  "d02",
 ]
 
 # now some silly macros to import and build procs based on the contents of the `days` array
