@@ -33,7 +33,8 @@ proc getCliPaths*(day: string): seq[string] =
     result.add day.inputPath
 
 proc readIntLines*(path: string): seq[int] =
-  path.getlines.map(parseInt)
+  path.withLines:
+    result.add(line.parseInt)
 
 # answers are almost always positive integers,
 # but they CAN be strings,
