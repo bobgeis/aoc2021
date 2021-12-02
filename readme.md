@@ -46,9 +46,12 @@ ___
 
 The first task is pretty straightfoward arithmetic. It's mostly a chance for people to make sure their setup is working.
 
-<!-- ___ -->
-<!-- ## d02 -->
-<!-- [Link](https://adventofcode.com/2021/day/2) -->
+___
+## d02
+[Link](https://adventofcode.com/2021/day/2)
+
+This is another pretty straightforward task, but requires some string parsing. I used [scanf](https://nim-lang.org/docs/strscans.html). I expect lots of solutions will use regex or peg though.
+
 
 <!-- ___ -->
 <!-- ## d03 -->
