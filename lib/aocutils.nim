@@ -1,7 +1,7 @@
 ## This contains procs and templates useful for this advent of code repo.
 import std/[monotimes, os, sequtils, strformat, strutils, tables, times]
+import pkg/[stint]
 import lib/[bedrock, timetemple]
-# import lib/[bedrock]
 
 const
   inputDir* = "in"
@@ -35,18 +35,23 @@ proc getCliPaths*(day: string): seq[string] =
 proc readIntLines*(path: string): seq[int] =
   path.getlines.map(parseInt)
 
-var answers: array[1..2, Table[string, int]] = [
-  initTable[string, int](),
-  initTable[string, int](),
+# answers are almost always positive integers,
+# but they CAN be strings,
+# or large integers (stint's Int128 or Int256)
+# so let's turn them all into strings for checking purposes
+var answers: array[1..2, Table[string, string]] = [
+  initTable[string, string](),
+  initTable[string, string](),
   ]
 
-proc part1is*(s: string, i: int) = answers[1][s] = i
-proc part2is*(s: string, i: int) = answers[2][s] = i
-proc checkpart*(part, i: int, path: string) =
+proc part1is*[T](s: string, a: T) = answers[1][s] = $a
+proc part2is*[T](s: string, a: T) = answers[2][s] = $a
+
+proc checkpart*[T](part: int, path: string, a: T) =
   if path in answers[part]:
-    let j = answers[part][path]
-    if i != j:
-      echo &"FAIL: {path} part {part} got {i} but expected {j}"
+    let b = answers[part][path]
+    if $a != b:
+      echo &"FAIL: {path} part {part} got {$a} but expected {b}"
 
 type
   RunResult* = tuple
@@ -102,9 +107,9 @@ template makeRunProc*(day:string): untyped =
     when not defined(skipPart2):
       res2 = part2(input)
     when not defined(skipPart1):
-      checkpart(1, res1, path)
+      checkpart(1, path, res1)
     when not defined(skipPart2):
-      checkpart(2, res2, path)
+      checkpart(2, path, res2)
     return (day: day, path: path, res: [res1, res2])
 
   proc timedRun*(path: string = inPath): TimedRunResult =
@@ -120,9 +125,9 @@ template makeRunProc*(day:string): untyped =
         when not defined(skipPart2):
           res2 = part2(input)
     when not defined(skipPart1):
-      checkpart(1, res1, path)
+      checkpart(1, path, res1)
     when not defined(skipPart2):
-      checkpart(2, res2, path)
+      checkpart(2, path, res1)
     return (day: day, path: path, res: [res1, res2], dur: [dur0, dur1, dur2, durAll])
 
   when isMainModule:
