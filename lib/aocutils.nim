@@ -128,7 +128,7 @@ template makeRunProc*(day:string): untyped =
     when not defined(skipPart1):
       checkpart(1, path, res1)
     when not defined(skipPart2):
-      checkpart(2, path, res1)
+      checkpart(2, path, res2)
     return (day: day, path: path, res: [res1, res2], dur: [dur0, dur1, dur2, durAll])
 
   when isMainModule:
