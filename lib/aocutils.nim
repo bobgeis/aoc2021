@@ -71,12 +71,16 @@ proc echoRR*(rr: RunResult) =
   echo &"Part2: {rr.res[1]}"
 
 proc prettyDur*(d: Duration): string =
-  let parts = d.toParts
-  const units = ["ns", "us", "ms", "s", "m"]
-  for i in Nanoseconds..Seconds:
-    result = &"{parts[i]:>3}{units[i.ord]} {result}"
-  if parts[Minutes] > 0:
-    result = &"{parts[Minutes]:>3}{units[Minutes.ord]} {result}"
+  let us = d.inMicroseconds
+  when defined(showtimeparts):
+    let parts = d.toParts
+    const units = ["ns", "us", "ms", "s", "m"]
+    for i in Nanoseconds..Seconds:
+      result = &"{parts[i]:>3}{units[i.ord]} {result}"
+    if parts[Minutes] > 0:
+      result = &"{parts[minutes]:>3}{units[Minutes.ord]} {result}"
+  else:
+    result = &"{us.float64 / 1000.0:>9.3f} ms"
 
 proc echoTRR*(trr: TimedRunResult) =
   echo &"Day {trr.day} at #{githash} for {trr.path}"
