@@ -46,12 +46,17 @@ ___
 
 The first task is pretty straightfoward arithmetic. It's mostly a chance for people to make sure their setup is working.
 
+There's a little bit of a trick to part 2: it says to compare the sums, but you can skip the sums and just compare input values 3 offsets apart.
+
 ___
 ## d02
 [Link](https://adventofcode.com/2021/day/2)
 
 This is another pretty straightforward task, but requires some string parsing. I used [scanf](https://nim-lang.org/docs/strscans.html). I expect lots of solutions will use regex or peg though.
 
+I had forgotten that scanTuple was introduced in nim 1.6, and have switched to use that (it just makes things more concise).
+
+There is also a clever `include` trick used by [pietroppeter](https://pietroppeter.github.io/adventofnim/2021/day02.html) that embeds the input in the compiled program. This is pretty neat, and allows us to treat the input itself as code. (Note: I'm not going to do use this here because I'm considering the run time performance, but the not compile time. If you use the input at compile time, you could make the run time arbitrarily short.)
 
 <!-- ___ -->
 <!-- ## d03 -->
