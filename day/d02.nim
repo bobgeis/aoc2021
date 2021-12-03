@@ -16,34 +16,26 @@ type Move = tuple
   amt: int
 
 proc parseLine(s:string):Vec2i =
-  ## looks like: "up 5"
+  ## one line looks like: "up 5"
   ## directions are: forward, up, down
-  var
-    dir: string
-    amt: int
-  if s.scanf("$w $i", dir, amt):
-    result = case dir:
-      of "up": [0,-1]
-      of "forward": [1,0]
-      of "down": [0,1]
-      else: err &"Unknown direction: {dir}"; [0,0]
-    result *= amt
+  let (_,dir,amt) = s.scanTuple("$w $i")
+  result = case dir:
+    of "up": [0,-1]
+    of "forward": [1,0]
+    of "down": [0,1]
+    else: err &"Unknown direction: {dir}"; [0,0]
+  result *= amt
 
 proc part0*(path: string): seq[Vec2i] =
-  path.withLines:
-    result.add line.parseLine
+  path.withLines: result.add line.parseLine
 
 proc part1*(input: seq[Vec2i]): int =
   let dest = input.foldl(a + b)
   result = dest[0] * dest[1]
 
 proc part2*(input: seq[Vec2i]): int =
-  var
-    dest = [0,0]
-    aim = 0
-  for move in input:
-    aim += move[1]
-    dest += [move[0], aim * move[0]]
-  result = dest[0] * dest[1]
+  var pos = [0,0,0]
+  for move in input: pos += [move[0], pos[2] * move[0], move[1]]
+  result = pos[0] * pos[1]
 
 makeRunProc(day)
