@@ -1,6 +1,6 @@
 ## run all the days in sequence
-import std/[macros, os, strformat]
-import lib/[aocutils]
+import std/[macros]
+import lib/[imps]
 
 const githash = staticexec "git rev-parse --short HEAD"
 
@@ -9,30 +9,7 @@ const days = [
   "d02",
 ]
 
-# now some silly macros to import and build procs based on the contents of the `days` array
-
-macro makeImports(): untyped =
-  ## create an import statement for every day in the `days` array
-  ## For whatever reason, imports declared from macros CANNOT be relative!
-  # dumpTree:
-  #   import d01
-  #   import day/d01
-  # StmtList
-  #   ImportStmt
-  #     Ident "d01"
-  # let
-  #   d1 = "d01"
-  #   tmp = &"import day/[{d1}]"
-  # result = parseStmt(tmp)
-  var impNode = newNimNode(nnkImportStmt)
-  for day in days:
-    impNode.add(ident(&"day/{day}"))
-  result = newStmtList()
-  result.add(impNode)
-  # echo result.treeRepr
-  # echo result.repr
-
-makeImports
+importModules(days,"day/")
 
 # StmtList
 #   ProcDef

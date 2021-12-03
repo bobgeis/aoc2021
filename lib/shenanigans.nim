@@ -1,7 +1,7 @@
 
 
 
-import std/[macros, monotimes, strformat, tables, times, unittest]
+import std/[macros, monotimes, sequtils, strformat, tables, times, unittest]
 
 import lib/[bedrock]
 
@@ -183,6 +183,14 @@ macro `..=!`*(lhs: untyped, rhs: typed): auto =
         let v = lhs[i]
         result.add(quote do:
           `v` = `t`.`v`)
+
+macro importModules*(modules: static[openarray[string]], prefix: static[string] = ""): untyped =
+    ## Import a list of modules with an optional prefix. Credit: https://github.com/MichalMarsalek/Advent-of-code/blob/master/2021/Nim/test.nim
+    ## I had a version of this macro I made myself but it was less concise.
+    ## *NB*: Modules may need absolute path, not relative path!
+    ## Eg: importing a sibling module "d01" in the "day" dir,
+    ## may require "day/d01" rather than just "d01"
+    nnkImportStmt.newTree(modules.mapIt(newIdentNode &"{prefix}{it}"))
 
 ###
 
