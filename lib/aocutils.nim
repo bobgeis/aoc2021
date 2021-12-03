@@ -59,16 +59,7 @@ type
     day: string
     path: string
     res: array[2, int]
-  TimedRunResult* = tuple
-    day: string
-    path: string
-    res: array[2, int]
     dur: array[4, Duration]
-
-proc echoRR*(rr: RunResult) =
-  echo &"Day {rr.day} at #{githash} for {rr.path}"
-  echo &"Part1: {rr.res[0]}"
-  echo &"Part2: {rr.res[1]}"
 
 proc prettyDur*(d: Duration): string =
   let us = d.inMicroseconds
@@ -82,20 +73,20 @@ proc prettyDur*(d: Duration): string =
   else:
     result = &"{us.float64 / 1000.0:>9.3f} ms"
 
-proc echoTRR*(trr: TimedRunResult) =
-  echo &"Day {trr.day} at #{githash} for {trr.path}"
-  echo &"Part1: {trr.res[0]}"
-  echo &"Part2: {trr.res[1]}"
+proc echoRR*(rr: RunResult) =
+  echo &"Day {rr.day} at #{githash} for {rr.path}"
+  echo &"Part1: {rr.res[0]}"
+  echo &"Part2: {rr.res[1]}"
   echo "Times:"
-  echo &"Part0: {trr.dur[0].prettyDur}"
+  echo &"Part0: {rr.dur[0].prettyDur}"
   when not defined(skipPart1):
-    echo &"Part1: {trr.dur[1].prettyDur}"
+    echo &"Part1: {rr.dur[1].prettyDur}"
   when not defined(skipPart2):
-    echo &"Part2: {trr.dur[2].prettyDur}"
-  echo &"Total: {trr.dur[3].prettyDur}"
+    echo &"Part2: {rr.dur[2].prettyDur}"
+  echo &"Total: {rr.dur[3].prettyDur}"
 
-proc echoTRRshort*(trr: TimedRunResult) =
-  echo &"Day {trr.day}: {trr.dur[3].prettyDur}"
+proc echoRRshort*(rr: RunResult) =
+  echo &"Day {rr.day}: {rr.dur[3].prettyDur}"
 
 template makeRunProc*(day:string): untyped =
   ## Generate a run proc and timedrun proc
@@ -104,20 +95,6 @@ template makeRunProc*(day:string): untyped =
   ## and echo the output.
 
   proc run*(path: string = inPath): RunResult =
-    let input = part0(path)
-    var res1: int
-    when not defined(skipPart1):
-      res1 = part1(input)
-    var res2: int
-    when not defined(skipPart2):
-      res2 = part2(input)
-    when not defined(skipPart1):
-      checkpart(1, path, res1)
-    when not defined(skipPart2):
-      checkpart(2, path, res2)
-    return (day: day, path: path, res: [res1, res2])
-
-  proc timedRun*(path: string = inPath): TimedRunResult =
     timevar durall:
       timevar dur0:
         let input = part0(path)
@@ -136,7 +113,4 @@ template makeRunProc*(day:string): untyped =
     return (day: day, path: path, res: [res1, res2], dur: [dur0, dur1, dur2, durAll])
 
   when isMainModule:
-    if "time" in commandLineParams():
-      getCliPaths(day).doit(it.timedrun.echoTRR)
-    else:
-      getCliPaths(day).doit(it.run.echoRR)
+    getCliPaths(day).doit(it.run.echoRR)
