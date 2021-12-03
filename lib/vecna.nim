@@ -46,6 +46,14 @@ DistributeSymbols([Name, Fn], [[origin, default], [lowest, low], [highest, high]
     for i in 0..result.high:
       result[i] = Fn(A)
 
+const
+  ori2i* = origin[2,int]()
+  ori2f* = origin[2,float]()
+  ori3i* = origin[3,int]()
+  ori3f* = origin[3,float]()
+  ori4i* = origin[4,int]()
+  ori4f* = origin[4,float]()
+
 # convert to vecs of different lengths
 
 DistributeSymbols([Name, Num], [[toVec2, 2], [toVec3, 3], [toVec4, 4]]):
@@ -484,6 +492,15 @@ proc drawTab*(t: SomeCtab2i; p: proc(v: Vec2i): char): string =
       result.add '\n'
     result.add p(v)
 
+proc drawSet*(t: SomeSet2i; p: proc(v: Vec2i): char): string =
+  ## Turn a sparse collection into a string for echoing
+  var yPrev = int.high
+  for v in t.grid():
+    if v.y != yPrev:
+      yPrev = v.y
+      result.add '\n'
+    result.add p(v)
+
 proc drawTab*[T](t: SomeTab3i[T]; p: proc(v: Vec3i): char): string =
   ## Turn a sparse collection into a string for echoing
   var zPrev, yPrev = int.high
@@ -508,6 +525,17 @@ proc drawTab*(t: SomeCtab3i; p: proc(v: Vec3i): char): string =
       result.add '\n'
     result.add p(v)
 
+proc drawSet*(t: SomeSet3i; p: proc(v: Vec3i): char): string =
+  ## Turn a sparse collection into a string for echoing
+  var zPrev, yPrev = int.high
+  for v in t.grid():
+    if v.z != zPrev:
+      zPrev = v.z
+      result.add &"\n\nz={v.z}"
+    if v.y != yPrev:
+      yPrev = v.y
+      result.add '\n'
+    result.add p(v)
 
 when isMainModule:
 
@@ -532,9 +560,14 @@ when isMainModule:
     assert 8 == a.y
     assert 6 == a.z + a.z
     assert 12 == a.w
+    a *= 2
+    assert a == [6,16,6,24]
+    a += a - [5,15,5,23]
+    assert a == [7,17,7,25]
 
   block:
     assert [0, 0] == origin[2, int]()
+    assert [0,0,0,0] == ori4i
 
   block:
     var
@@ -552,6 +585,17 @@ when isMainModule:
     [mn, mx] ..= t.getMinMax
     assert mn == [-1, -10]
     assert mx == [10, 1]
+
+  block:
+    var s = initHashSet[Vec2i]()
+    s.incl ori2i
+    s.incl [3,1]
+    s.incl [2,2]
+    s.incl [-1,-1]
+    proc p(v:Vec2i):char =
+      if v in s: '#'
+      else: '.'
+    assert s.drawSet(p) == "\n#....\n.#...\n....#\n...#."
 
   echo "vecna asserts passed"
 
