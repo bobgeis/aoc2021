@@ -77,13 +77,14 @@ proc echoRR*(rr: RunResult) =
   echo &"Day {rr.day} at #{githash} for {rr.path}"
   echo &"Part1: {rr.res[0]}"
   echo &"Part2: {rr.res[1]}"
-  echo "Times:"
-  echo &"Part0: {rr.dur[0].prettyDur}"
-  when not defined(skipPart1):
-    echo &"Part1: {rr.dur[1].prettyDur}"
-  when not defined(skipPart2):
-    echo &"Part2: {rr.dur[2].prettyDur}"
-  echo &"Total: {rr.dur[3].prettyDur}"
+  when defined(release):
+    echo "Times:"
+    echo &"Part0: {rr.dur[0].prettyDur}"
+    when not defined(skipPart1):
+      echo &"Part1: {rr.dur[1].prettyDur}"
+    when not defined(skipPart2):
+      echo &"Part2: {rr.dur[2].prettyDur}"
+    echo &"Total: {rr.dur[3].prettyDur}"
 
 proc echoRRshort*(rr: RunResult) =
   echo &"Day {rr.day}: {rr.dur[3].prettyDur}"
