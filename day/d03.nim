@@ -23,11 +23,15 @@ proc getdiff(ss:seq[string]): seq[int] =
       if c == '1': inc result[i]
       else: dec result[i]
 
+proc getdiff(ss:seq[string], i:int): int =
+  result = 0
+  for s in ss:
+    if s[i] == '1': inc result
+    else: dec result
+
 proc part1*(input: seq[string]): int =
   let counts = getdiff(input)
-  var
-    gamma = ""
-    epsilon = ""
+  var gamma, epsilon = ""
   for n in counts:
     if n > 0:
       gamma &= "1"
@@ -37,27 +41,15 @@ proc part1*(input: seq[string]): int =
       epsilon &= "1"
   result = gamma.parsebinint * epsilon.parsebinint
 
-proc getoxy(ss: seq[string]): int =
-  var rem = ss
-  for i in 0..rem[0].high:
-    if rem.getdiff[i] >= 0:
-      rem = rem.filterit(it[i] == '1')
+proc getcmp(ss: sink seq[string], p: proc(a,b:int):bool): int =
+  for i in 0..ss[0].high:
+    if ss.getdiff(i).p(0):
+      ss = ss.filterit(it[i] == '1')
     else:
-      rem = rem.filterit(it[i] == '0')
-    if rem.len == 1: return rem[0].parsebinint
-  0
-
-proc getco2(ss: seq[string]): int =
-  var rem = ss
-  for i in 0..rem[0].high:
-    if rem.getdiff[i] < 0:
-      rem = rem.filterit(it[i] == '1')
-    else:
-      rem = rem.filterit(it[i] == '0')
-    if rem.len == 1: return rem[0].parsebinint
-  0
+      ss = ss.filterit(it[i] == '0')
+    if ss.len == 1: return ss[0].parsebinint
 
 proc part2*(input: seq[string]): int =
-  result = input.getoxy * input.getco2
+  result = input.getcmp(lt) * input.getcmp(ge)
 
 makeRunProc(day)
