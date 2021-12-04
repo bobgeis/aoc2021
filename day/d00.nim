@@ -6,10 +6,10 @@ const
   inPath = inputPath(day)
   t1path = inputPath(day,"t1")
 
-inpath.part1is 1
-inpath.part2is 2
-t1path.part1is 1
-t1path.part2is 2
+# inpath.part1is 1
+# inpath.part2is 2
+# t1path.part1is 1
+# t1path.part2is 2
 
 proc part0*(path: string): seq[string] =
   path.getLines

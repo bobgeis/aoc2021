@@ -69,6 +69,14 @@ task cleandoc, "empty the doc dir":
   excho &"rm -rf {nimDocDir}"
   excho &"mkdir doc"
 
+task initday, "create template files for a new day":
+  for i in 2..paramCount():
+    let day = paramStr(i)
+    echo &"Creating initial files for day {day}"
+    exec &"touch in/i{day}.txt"
+    exec &"touch in/i{day}t1.txt"
+    exec &"cp day/d00.nim day/d{day}.nim"
+
 task docs, "generate code doc":
   --project
   switch("out",nimDocdir)
