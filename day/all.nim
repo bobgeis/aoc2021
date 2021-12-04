@@ -7,6 +7,7 @@ const githash = staticexec "git rev-parse --short HEAD"
 const days = [
   "d01",
   "d02",
+  "d03",
 ]
 
 importModules(days,"day/")
