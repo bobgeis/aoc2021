@@ -31,6 +31,26 @@ ___
 ___
 ___
 
+## all
+
+The day/all.nim program exists to sequentially run all the days on their default input and check that the answers are still correct. The timing below is not a scientific benchmark, but should give on a ballpark on which days are slow/fast.
+
+```
+$ nim dt all
+nim c  -d:fast day/all.nim
+time out/run
+Advent of Code 2021. All days at #ec3ca0c
+Day 01:     0.228 ms
+Day 02:     0.239 ms
+Day 03:     0.388 ms
+
+real    0m0.006s
+user    0m0.002s
+sys     0m0.002s
+```
+
+___
+
 ## d00
 
 Generic setup. Using vscode with [nim](https://marketplace.visualstudio.com/items?itemName=kosz78.nim) and [indent-rainbow](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow) extensions. Plus other not nim-specific ones.
@@ -58,9 +78,11 @@ I had forgotten that scanTuple was introduced in nim 1.6, and have switched to u
 
 There is also a clever `include` trick used by [pietroppeter](https://pietroppeter.github.io/adventofnim/2021/day02.html) that embeds the input in the compiled program. This is pretty neat, and allows us to treat the input itself as code. (Note: I'm not going to do use this here because I'm considering the run time performance, but the not compile time. If you use the input at compile time, you could make the run time arbitrarily short.)
 
-<!-- ___ -->
-<!-- ## d03 -->
-<!-- [Link](https://adventofcode.com/2021/day/3) -->
+___
+## d03
+[Link](https://adventofcode.com/2021/day/3)
+
+Part 2 was a bit confusing at first. Tidying up, and seeing what some other people had done, I saw something useful: if you are making a var copy of an immutable arg, you can just declare that arg as `sink`. This will use the arg "as is" if it's the last use, or make a full copy if not, potentially saving you from having to copy.
 
 <!-- ___ -->
 <!-- ## d04 -->

@@ -16,21 +16,22 @@ t1path.part2is 230
 proc part0*(path: string): seq[string] =
   path.getLines
 
-proc getdiff(ss:seq[string]): seq[int] =
+proc getcounts(ss:seq[string]): seq[int] =
   result.setLen(ss[0].len)
   for s in ss:
     for i,c in s:
       if c == '1': inc result[i]
       else: dec result[i]
 
-proc getdiff(ss:seq[string], i:int): int =
+proc getcounts(ss:seq[string], i:int): int =
+  ## In part 2 we only need the count at one index at a time
   result = 0
   for s in ss:
     if s[i] == '1': inc result
     else: dec result
 
 proc part1*(input: seq[string]): int =
-  let counts = getdiff(input)
+  let counts = getcounts(input)
   var gamma, epsilon = ""
   for n in counts:
     if n > 0:
@@ -43,7 +44,7 @@ proc part1*(input: seq[string]): int =
 
 proc getcmp(ss: sink seq[string], p: proc(a,b:int):bool): int =
   for i in 0..ss[0].high:
-    if ss.getdiff(i).p(0):
+    if ss.getcounts(i).p(0):
       ss = ss.filterit(it[i] == '1')
     else:
       ss = ss.filterit(it[i] == '0')
