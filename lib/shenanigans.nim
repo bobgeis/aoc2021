@@ -87,8 +87,6 @@ macro DistributeSymbols*(standIns, targetLists, body: untyped): untyped =
   # echo treeRepr result
   # echo result.repr
 
-
-
 macro `..=`*(lhs: untyped, rhs: typed): auto =
   ## Unpacking macro: Use this to assign multiple variables from a data structure.  If the data structure uses numerical indexes, then you can use notation like: `[x,y,_,w] ..= someSeq`.  Note that _s are skipped.  If the data structure is an object or named tuple, then you can use notation like: `{x,y,z:zCoord,w} ..= someTuple`.  Note that :s are used to rename variables, otherwise the name of the variable will be the name of the field.  There are three flavors of this macro: `..=` defines lets, `..=^` defines vars, and `..=!` assigns to existing vars.
   ## Adapted from https://github.com/Kaynato/AdventOfCode/blob/master/unpack.nim and https://github.com/technicallyagd/unpack

@@ -16,9 +16,14 @@ proc spy*[T](t: T, msg = ""): T {.inline.} =
   echo &"{msg}{$t}"
   return t
 
-proc toString*[T](t: T): string {.inline.} =
-  ## For when you want to turn something into a string in the middle of a chain of proc calls.
-  $t
+# operators can't be passed in as procvar!
+proc toString*[T](t: T): string = $t
+proc lt*[T](a,b:T):bool = a < b
+proc gt*[T](a,b:T):bool = a > b
+proc le*[T](a,b:T):bool = a <= b
+proc ge*[T](a,b:T):bool = a >= b
+proc eq*[T](a,b:T):bool = a == b
+proc ne*[T](a,b:T):bool = a != b
 
 proc err*(msg = "Error!") =
   ## easy terse error
