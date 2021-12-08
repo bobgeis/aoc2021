@@ -24,6 +24,8 @@ type
   Vec3f* = Vec[3, float]
   Vec4i* = Vec[4, int]
   Vec4f* = Vec[4, float]
+  Vec5i* = Vec[5, int]
+  Vec5f* = Vec[5, float]
 
   Vec2i64* = Vec[2, int64]
 
