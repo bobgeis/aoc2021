@@ -55,6 +55,23 @@ const
   ori3f* = origin[3,float]()
   ori4i* = origin[4,int]()
   ori4f* = origin[4,float]()
+  ori5i* = origin[5,int]()
+  ori5f* = origin[5,float]()
+
+proc unit*[N,A]():Vec[N,A] =
+  ## unit vector
+  for i in 0..result.high:
+    result[i] = 1.0.A
+
+const
+  unit2i* = unit[2,int]()
+  unit2f* = unit[2,float]()
+  unit3i* = unit[2,int]()
+  unit3f* = unit[2,float]()
+  unit4i* = unit[2,int]()
+  unit4f* = unit[2,float]()
+  unit5i* = unit[2,int]()
+  unit5f* = unit[2,float]()
 
 # convert to vecs of different lengths
 
@@ -206,6 +223,16 @@ proc aabb*[N, A](a, c1, c2: Vec[N, A]): bool =
 proc onseg*[A](a, p1, p2: Vec[2, A]): bool =
   ## Is the point `a` on the line segment `p1` to `p2`?
   a.aabb(p1, p2) and ((a.x - p1.x)/(p2.x - p1.x) == (a.y - p1.y)/(p2.y - p1.y))
+
+iterator countbetween*[N:static[int],A:SomeNumber](a, b: Vec[N,A], step: Vec[N,A] = unit[N,A]()): Vec[N,A] =
+  ## Iterate from a to b with an optional step size.
+  if a == b: yield a
+  else:
+    let delta = [step.x * cmp(b.x,a.x), step.y * cmp(b.y,a.y)]
+    var curr = a
+    while curr.aabb(a, b):
+      yield curr
+      curr += delta
 
 # compass directions in 2d and 3d grids, with optional origin
 
