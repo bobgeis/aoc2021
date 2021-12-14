@@ -84,7 +84,7 @@ proc getOr*[T](s: openArray[T], i: int, def: T): T {.inline.} =
   ## GetOrDefault for openArrays
   if i in s.low..s.high: s[i] else: def
 
-iterator countbetween*(a, b: int, step: int = 1): int =
+iterator countbetween*[A:SomeNumber](a, b: A, step: A = 1.0.A): A =
   ## Iterate from a to b with an optional step size.  Note that this is for cases where you don't know until runtime whether a < b.  If you know that before, then you should use a.countup(b) or a.countdown(b) for better performance.  If provided, step should always be positive.
   runnableExamples:
     var
@@ -95,11 +95,13 @@ iterator countbetween*(a, b: int, step: int = 1): int =
     for i in 0.countbetween(x): s.add i
     for i in 0.countbetween(x, 2): s.add i
     assert s == @[0, 1, 2, 3, 4, 5, 0, -1, -2, -3, -4, -5, 0, -2, -4]
-  let delta = step * cmp(b, a)
-  var curr = a
-  while curr.bt(a, b):
-    yield curr
-    curr += delta
+  if a == b: yield a
+  else:
+    let delta = step * cmp(b, a)
+    var curr = a
+    while curr.bt(a, b):
+      yield curr
+      curr += delta
 
 proc clamp*[A: SomeNumber](v, min, max: A): A {.inline.} =
   return if v < min: min
