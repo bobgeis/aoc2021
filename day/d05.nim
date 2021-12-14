@@ -20,8 +20,8 @@ proc part1*(input: seq[(Vec2i,Vec2i)]): int =
       for x in countbetween(vs[0].x,vs[1].x):
         for y in countbetween(vs[0].y,vs[1].y):
           tab.inc([x,y])
-  for v in tab.values:
-    if v > 1: inc result
+  for n in tab.values:
+    if n > 1: inc result
 
 t1path.part1is 5
 inpath.part1is 6267
@@ -29,14 +29,12 @@ inpath.part1is 6267
 proc part2*(input: seq[(Vec2i,Vec2i)]): int =
   var tab = initCountTable[Vec2i]().Ctab2i
   for vs in input:
-    if vs[0].x == vs[1].x or vs[0].y == vs[1].y:
-      for x in countbetween(vs[0].x,vs[1].x):
-        for y in countbetween(vs[0].y,vs[1].y):
-          tab.inc([x,y])
-  for v in tab.values:
-    if v > 1: inc result
+    for v in countbetween(vs[0],vs[1]):
+      tab.inc(v)
+  for n in tab.values:
+    if n > 1: inc result
 
-inpath.part2is 12
-# t1path.part2is 2
+t1path.part2is 12
+inpath.part2is 20196
 
 makeRunProc(day)
