@@ -1,11 +1,7 @@
 import lib/[imps]
 # https://adventofcode.com/2021/day/6
 
-const
-  day = "06"
-  inPath = inputPath(day)
-  t1path = inputPath(day,"t1")
-  o1path = inputPath(day,"o1")
+const day = "06"
 
 proc tick(ints: var seq[int]) =
   var toadd = 0
@@ -26,15 +22,29 @@ proc part1*(input: sink seq[int]): int =
     input.tick
   result = input.len
 
-t1path.part1is 5934
-inpath.part1is 385391
-# o1path.part1is 1
+
+proc sumfish(tab: CountTable[int]):int = tab.values.toseq.sum
 
 proc part2*(input: seq[int]): int =
-  result = 0
+  ## The part 1 method is way too slow here!
+  var tab = input.toCountTable
+  for i in 1..256:
+    let toadd = tab[0]
+    for j in 0..7:
+      tab[j] = tab[j+1]
+    tab.inc(6, toadd)
+    tab[8] = toadd
+  result = tab.sumfish
 
-# t1path.part2is 2
-# inpath.part2is 2
-# o1path.part2is 2
+# paths and solution checking
+const
+  inPath = inputPath(day)
+  t1path = inputPath(day,"t1")
+
+t1path.part1is 5934
+inpath.part1is 385391
+
+t1path.part2is 26984457539
+inpath.part2is 1728611055389
 
 makeRunProc(day)
