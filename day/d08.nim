@@ -19,90 +19,59 @@ proc part1*(input: seq[seq[seq[string]]]): int =
   # 8 = 7 segments
   result = tab[2] + tab[4] + tab[3] + tab[7]
 
-
 proc tocset*(s:string):set[char] =
   ## turn a string into a set of char
   for c in s: result.incl c
 
-proc pluck*[T](s:set[T]):T =
-  for i in s.items: return i
+proc makemap(codewords:seq[string]): Table[set[char],char] =
+  result = initTable[set[char],char]()
+  var code = initTable[int,seq[set[char]]]()
+  for word in codewords:
+    code.mgetorput(word.len,@[]).add word.tocset
+  let
+    one = code[2][0]
+    seven = code[3][0]
+    four = code[4][0]
+    eight = code[7][0]
+  var
+    zero,two,three,five,six,nine: set[char]
+  result[one] = '1'
+  result[seven] = '7'
+  result[four] = '4'
+  result[eight] = '8'
+  for lensix in code[6]:
+    if (lensix - four).len == 2:
+      nine = lensix
+      result[lensix] = '9'
+    elif (lensix - one).len == 4:
+      zero = lensix
+      result[lensix] = '0'
+    else:
+      six = lensix
+      result[lensix] = '6'
+  for lenfive in code[5]:
+    if (lenfive - one).len == 3:
+      three = lenfive
+      result[lenfive] = '3'
+    elif (lenfive - four).len == 2:
+      five = lenfive
+      result[lenfive] = '5'
+    else:
+      two = lenfive
+      result[lenfive] = '2'
 
-const
-  digits = [
-    "abcdefg",
-    "cf",
-    "acdeg",
-    "acdfg",
-    "bcdf",
-    "abdfg",
-    "abdefg",
-    "acf",
-    "abcdefg",
-    "abcdfg",
-  ]
-  disets = digits.mapit(it.tocset)
-
-# { a } = seven - one / 3 - 2
-# { b,d } = four - one / 4 - 2
-# { g } = three - four - seven
-
-# 0 = 6 segments
-# 1 = 2 segments
-# 2 = 5 segments
-# 3 = 5 segments
-# 4 = 4 segments
-# 5 = 5 segments
-# 6 = 6 segments
-# 7 = 3 segments
-# 8 = 7 segments
-# 9 = 6 segments
-
+proc readmap(map: Table[set[char],char],digits:seq[string]): int =
+  var num = ""
+  for digit in digits:
+    if digit.len == 0: continue
+    num.add map[digit.tocset]
+  return num.parseint
 
 proc part2*(input: seq[seq[seq[string]]]): int =
   result = 0
   for line in input:
-    var
-      code = initTable[int,seq[set[char]]]()
-      stod = initTable[set[char],char]()
-      num = ""
-    for word in line[0]:
-      code.mgetorput(word.len,@[]).add word.tocset
-    let
-      one = code[2][0]
-      seven = code[3][0]
-      four = code[4][0]
-      eight = code[7][0]
-    var
-      zero,two,three,five,six,nine: set[char]
-    stod[one] = '1'
-    stod[seven] = '7'
-    stod[four] = '4'
-    stod[eight] = '8'
-    for lensix in code[6]:
-      if (lensix - four).len == 2:
-        nine = lensix
-        stod[lensix] = '9'
-      elif (lensix - one).len == 4:
-        zero = lensix
-        stod[lensix] = '0'
-      else:
-        six = lensix
-        stod[lensix] = '6'
-    for lenfive in code[5]:
-      if (lenfive - one).len == 3:
-        three = lenfive
-        stod[lenfive] = '3'
-      elif (lenfive - four).len == 2:
-        five = lenfive
-        stod[lenfive] = '5'
-      else:
-        two = lenfive
-        stod[lenfive] = '2'
-    for digit in line[1]:
-      if digit.len == 0: continue
-      num.add stod[digit.tocset]
-    result += num.parseint
-
+    let map = makemap(line[0])
+    result += readmap(map,line[1])
 
 const
   inPath = inputPath(day)
