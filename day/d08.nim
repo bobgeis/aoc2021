@@ -4,27 +4,32 @@ import lib/[imps]
 const day = "08"
 
 
-proc part0*(path: string): seq[string] =
-  path.getLines
+proc part0*(path: string): seq[seq[seq[string]]] =
+  path.withlines:
+    result.add(line.split('|').mapit(it.split(' ')))
 
-proc part1*(input: seq[string]): int =
-  result = 0
+proc part1*(input: seq[seq[seq[string]]]): int =
+  var tab = initCountTable[int]()
+  for line in input:
+    for answer in line[1]:
+      inc tab, answer.len
+  # 1 = 2 segments
+  # 4 = 4 segments
+  # 7 = 3 segments
+  # 8 = 7 segments
+  result = tab[2] + tab[4] + tab[3] + tab[7]
 
-
-proc part2*(input: seq[string]): int =
+proc part2*(input: seq[seq[seq[string]]]): int =
   result = 0
 
 const
   inPath = inputPath(day)
   t1path = inputPath(day,"t1")
-  t2path = inputPath(day,"t2")
 
-# t1path.part1is 0
-# t2path.part1is 0
-# inpath.part1is 0
+t1path.part1is 26
+inpath.part1is 352
 
-# t1path.part2is 0
-# t2path.part2is 0
+t1path.part2is 61229
 # inpath.part2is 0
 
 makeRunProc(day)
