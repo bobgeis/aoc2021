@@ -84,6 +84,22 @@ proc getOr*[T](s: openArray[T], i: int, def: T): T {.inline.} =
   ## GetOrDefault for openArrays
   if i in s.low..s.high: s[i] else: def
 
+proc tocset*(s:string):set[char] =
+  ## turn a string into a char set
+  for c in s: result.incl c
+
+proc toSysSet*[T](s:openArray[T]):set[T] =
+  for t in s:
+    result.incl t
+
+proc peek*[T](s:set[T]):T =
+  ## get an arbitrary value in a set
+  for i in s.items: return i
+
+proc peek*[T](s:HashSet[T]):T =
+  ## get an arbitrary value in a set
+  for i in s.items: return i
+
 iterator countbetween*[A:SomeNumber](a, b: A, step: A = 1.0.A): A =
   ## Iterate from a to b with an optional step size.  Note that this is for cases where you don't know until runtime whether a < b.  If you know that before, then you should use a.countup(b) or a.countdown(b) for better performance.  If provided, step should always be positive.
   runnableExamples:
