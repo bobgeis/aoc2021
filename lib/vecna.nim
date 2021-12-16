@@ -279,6 +279,19 @@ const
     [0,0,-1],
   ] ## all cubes reachable from a cube, incl corners and origin
 
+proc getAdj*[N,A](v:Vec[N,A],dirs: openArray[Vec[N,A]]):seq[Vec[N,A]] =
+  for dir in dirs: result.add(v + dir)
+
+proc getAdj4*(v:Vec2i):seq[Vec2i] = v.getAdj(dirs2d4)
+proc getAdj5*(v:Vec2i):seq[Vec2i] = v.getAdj(dirs2d5)
+proc getAdj8*(v:Vec2i):seq[Vec2i] = v.getAdj(dirs2d8)
+proc getAdj9*(v:Vec2i):seq[Vec2i] = v.getAdj(dirs2d9)
+
+proc getAdj6*(v:Vec3i):seq[Vec3i] = v.getAdj(dirs3d6)
+proc getAdj7*(v:Vec3i):seq[Vec3i] = v.getAdj(dirs3d7)
+proc getAdj26*(v:Vec3i):seq[Vec3i] = v.getAdj(dirs3d26)
+proc getAdj27*(v:Vec3i):seq[Vec3i] = v.getAdj(dirs3d27)
+
 # using vecna as keys in tables, sets, and nested seqs
 
 type
@@ -384,6 +397,12 @@ template `[]=`*[T](s: Seq3i[T]; x, y, z: int; val: T) = s[z][y][x] = val
 template `[]`*[T](s: Seq4i[T]; x, y, z, w: int): T = s[w][z][y][x]
 template `[]=`*[T](s: Seq4i[T]; x, y, z, w: int; val: T) = s[w][z][y][x] = val
 
+proc getOr*[T](s: Seq2i[T], x,y:int, def:T): T =
+  ## Like getOrDefault for seqs of seqs of T
+  if y notin s.low..s.high: def
+  elif x notin s[0].low..s[0].high: def
+  else: s[y][x]
+
 # getters/setters for seqs using vecs
 template `[]`*[T](s: Seq2i[T]; arg: Vec2i): T =
   let v = arg
@@ -403,6 +422,12 @@ template `[]`*[T](s: Seq4i[T]; arg: Vec4i): T =
 template `[]=`*[T](s: Seq4i[T]; arg: Vec4i; val: T): T =
   let v = arg
   s[v.x, v.y, v.z, v.w] = val
+
+proc getOr*[T](s: Seq2i[T],v:Vec2i, def:T): T =
+  ## Like getOrDefault for seqs of seqs of T
+  if v.y notin s.low..s.high: def
+  elif v.x notin s[0].low..s[0].high: def
+  else: s[v]
 
 # remember seq[string] == seq[seq[char]]
 proc toSeq2iChar*(s: seq[string]): Seq2i[char] =
