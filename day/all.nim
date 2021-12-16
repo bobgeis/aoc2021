@@ -13,6 +13,7 @@ const days = [
   "d06",
   "d07",
   "d08",
+  "d09",
 ]
 
 importModules(days,"day/")
