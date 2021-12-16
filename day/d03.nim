@@ -54,3 +54,6 @@ proc part2*(input: seq[string]): int =
   result = input.getcmp(lt) * input.getcmp(ge)
 
 makeRunProc(day)
+
+when isMainModule:
+  getCliPaths(day).doit(it.run.echoRR)

@@ -74,3 +74,6 @@ proc part2*(input: (seq[int],seq[Board])): int =
   return propagate(input[0],input[1])[1]
 
 makeRunProc(day)
+
+when isMainModule:
+  getCliPaths(day).doit(it.run.echoRR)

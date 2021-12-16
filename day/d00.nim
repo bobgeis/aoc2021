@@ -25,3 +25,6 @@ const
 # inpath.part2is 0
 
 makeRunProc(day)
+
+when isMainModule:
+  getCliPaths(day).doit(it.run.echoRR)

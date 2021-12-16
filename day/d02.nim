@@ -39,3 +39,6 @@ proc part2*(input: seq[Vec2i]): int =
   result = pos[0] * pos[1]
 
 makeRunProc(day)
+
+when isMainModule:
+  getCliPaths(day).doit(it.run.echoRR)

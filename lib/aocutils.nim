@@ -113,5 +113,3 @@ template makeRunProc*(day:string): untyped =
       checkpart(2, path, res2)
     return (day: day, path: path, res: [res1, res2], dur: [dur0, dur1, dur2, durAll])
 
-  when isMainModule:
-    getCliPaths(day).doit(it.run.echoRR)

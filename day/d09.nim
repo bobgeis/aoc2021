@@ -24,3 +24,6 @@ t1path.part1is 15
 # inpath.part2is 0
 
 makeRunProc(day)
+
+when isMainModule:
+  getCliPaths(day).doit(it.run.echoRR)

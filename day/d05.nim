@@ -38,3 +38,6 @@ t1path.part2is 12
 inpath.part2is 20196
 
 makeRunProc(day)
+
+when isMainModule:
+  getCliPaths(day).doit(it.run.echoRR)

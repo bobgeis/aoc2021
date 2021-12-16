@@ -41,3 +41,6 @@ proc part2*(input: seq[int]): int =
       if input[i] > input[i-3]: inc result
 
 makeRunProc(day)
+
+when isMainModule:
+  getCliPaths(day).doit(it.run.echoRR)
