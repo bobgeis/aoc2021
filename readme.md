@@ -21,6 +21,16 @@
 - [stint](https://github.com/status-im/nim-stint)
 - [stew](https://github.com/status-im/nim-stew)
 
+## repo
+
+Generic setup. Using vscode with [nim](https://marketplace.visualstudio.com/items?itemName=kosz78.nim) and [indent-rainbow](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow) extensions. Plus other not nim-specific ones.
+
+For nimble packages, the `stint` package is vital for dealing with very large ints. `memo` and `itertools` are sometimes very helpful and convenient.
+
+I have a large 'lib' of helper code from previous years that I may re-use this year. `aocutils` is for working in the repo (eg finding data files for each day). `bedrock` has misc utilities that don't import anything else from the repo; it's the 'bottom'. `vecna` has a bunch of convenience utilities for working with coordinates (x,y,etc), which happens a lot in aoc. `graphwalk` is an implementation of bfs and Dijkstra's algorithm, because they come up a lot. `shenanigans` is for experimentation and causing trouble.
+
+There are a number of scripts in `config.nims`. `nim dr 01` will compile and run day 1 with the default input. `nim dt 01` will compile and run with performance optimizations. Specific input files can be passed like `nim dr 01 i t1`, where `i` represents the default input, `t1` represents the first test input, etc.
+
 ___
 ___
 ___
@@ -29,18 +39,6 @@ ___
 
 ___
 ___
-___
-
-## d00
-
-Generic setup. Using vscode with [nim](https://marketplace.visualstudio.com/items?itemName=kosz78.nim) and [indent-rainbow](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow) extensions. Plus other not nim-specific ones.
-
-For nimble packages, the `stint` package is vital for dealing with very large ints. `memo` and `itertools` are sometimes very helpful and convenient.
-
-I have a large 'lib' of helper code from previous years that I may re-use this year. `aocutils` is for working in the repo (eg finding data files for each day). `bedrock` has misc utilities that don't import anything else from the repo; it's the 'bottom'. `vecna` has a bunch of convenience utilities for working with coordinates (x,y,etc), which happens a lot in aoc. `graphwalk` is an implementation of bfs and Dijkstra's algorithm, because they come up a lot. `shenanigans` is for experimentation and causing trouble.
-
-There are a number of scripts in `config.nims`. `nim dr 01` will compile and run day 1 with the default input. `nim dt 01` will compile and run with performance optimizations. Specific input files can be passed like `nim dr 01 i t1`, where `i` represents the default input, `t1` represents the first test input.
-
 ___
 
 ## all
@@ -63,6 +61,12 @@ Day 08:     2.251 ms
 real    0m0.099s
 user    0m0.065s
 ```
+
+___
+
+# d00
+
+day 0 is a template for each day. It has stubs for part0 (work common to part 1 and part 2) and part1 and part 2. It also has calls to `part1is` and `part2is` for test and input paths, which are used to verify that refactoring doesn't break something we know works.
 
 ___
 
@@ -91,30 +95,40 @@ ___
 
 Part 2 was a bit confusing at first. Tidying up, and seeing what some other people had done, I saw something useful: if you are making a var copy of an immutable arg, you can just declare that arg as `sink`. This will use the arg "as is" if it's the last use, or make a full copy if not, potentially saving you from having to copy.
 
-<!-- ___ -->
+___
 
-<!-- ## d04 -->
-<!-- [Link](https://adventofcode.com/2021/day/4) -->
+## d04
+[Link](https://adventofcode.com/2021/day/4)
 
-<!-- ___ -->
+Bingo! I found it convenient to define a type for this one.
 
-<!-- ## d05 -->
-<!-- [Link](https://adventofcode.com/2021/day/5) -->
+___
 
-<!-- ___ -->
+## d05
+[Link](https://adventofcode.com/2021/day/5)
 
-<!-- ## d06 -->
-<!-- [Link](https://adventofcode.com/2021/day/6) -->
+My implementation of day 5 is _very_ slow compared to the other days so far. I should come back to this with a mind to improve it.
 
-<!-- ___ -->
+___
 
-<!-- ## d07 -->
-<!-- [Link](https://adventofcode.com/2021/day/7) -->
+## d06
+[Link](https://adventofcode.com/2021/day/6)
 
-<!-- ___ -->
+Part 2 of day 6 was the first time so far where the naive brute force approach was too slow. Thinking for a bit, one notices that the order of the fix in the list is not actually important, and just keeping count of the number of fish at each number is sufficient. This makes things much faster.
 
-<!-- ## d08 -->
-<!-- [Link](https://adventofcode.com/2021/day/8) -->
+___
+
+## d07
+[Link](https://adventofcode.com/2021/day/7)
+
+Naive brute force approach worked: loop from the leftmost crab to the rightmost one, finding the cost at each position, then take the minimum cost.
+
+___
+
+## d08
+[Link](https://adventofcode.com/2021/day/8)
+
+If you treat the encoded numbers as sets of characters, you can pretty quickly decode everything by doing set differences and comparing set sizes. There's probably a better way than what I did, but it worked well enough.
 
 <!-- ___ -->
 
