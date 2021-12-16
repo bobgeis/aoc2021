@@ -48,18 +48,21 @@ The day/all.nim program exists to sequentially run all the days on their default
 ```
 $ nim dt all
 nim c  -d:fast day/all.nim
-Advent of Code 2021. All days at #94f4af0
-Day 01:     0.208 ms
-Day 02:     0.156 ms
-Day 03:     0.264 ms
-Day 04:     3.902 ms
-Day 05:    75.790 ms
-Day 06:     4.367 ms
-Day 07:     3.913 ms
-Day 08:     2.251 ms
+time out/run
+Advent of Code 2021. All days at #b6c2b6b
+Day 01:     0.395 ms
+Day 02:     0.350 ms
+Day 03:     0.620 ms
+Day 04:     5.141 ms
+Day 05:    53.535 ms
+Day 06:     9.636 ms
+Day 07:     5.353 ms
+Day 08:     3.079 ms
+Day 09:     7.232 ms
 
-real    0m0.099s
-user    0m0.065s
+real    0m0.094s
+user    0m0.070s
+sys     0m0.011s
 ```
 
 ___
@@ -130,10 +133,12 @@ ___
 
 If you treat the encoded numbers as sets of characters, you can pretty quickly decode everything by doing set differences and comparing set sizes. There's probably a better way than what I did, but it worked well enough.
 
-<!-- ___ -->
+___
 
-<!-- ## d09 -->
-<!-- [Link](https://adventofcode.com/2021/day/9) -->
+## d09
+[Link](https://adventofcode.com/2021/day/9)
+
+Did brute force for both part 1 and part 2.
 
 <!-- ___ -->
 
