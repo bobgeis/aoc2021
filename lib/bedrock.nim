@@ -172,6 +172,9 @@ proc groupsOf*[T](s: seq[T], g: Positive): seq[seq[T]] =
       i = 0
   if sub.len > 0: result.add sub
 
+proc reduce*[T,U](ts:openArray[T],f:proc(u:U,t:T):U, base:U):U {.inline.} =
+  result = base
+  for t in ts: result = f(result,t)
 
 when isMainModule:
 
