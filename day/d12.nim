@@ -13,23 +13,24 @@ proc part0*(path: string): Graph =
     result.mgetorput(lhs,@[]).add rhs
     result.mgetorput(rhs,@[]).add lhs
 
-proc countPaths(graph:Graph, start, stop: string):int =
+proc countPaths(graph:Graph, start, stop: string, revisit=false):int =
   var count = 0
-  proc walk(path: seq[string]) =
+  proc walk(path: seq[string],revisit:bool) =
     if path[^1] == stop: inc count
     else:
       for edge in graph[path[^1]]:
         if edge[0].isUpperAscii or edge notin path:
-          walk(path & edge)
-  walk(@[start])
+          walk(path & edge, revisit)
+        elif revisit and edge != "start":
+          walk(path & edge, false)
+  walk(@[start],revisit)
   count
 
 proc part1*(input: Graph): int =
   input.countPaths("start","end")
 
-
 proc part2*(input: Graph): int =
-  result = 0
+  input.countPaths("start","end",true)
 
 const
   inPath = inputPath(day)
@@ -42,10 +43,10 @@ t2path.part1is 19
 t3path.part1is 226
 inpath.part1is 4241
 
-# t1path.part2is 36
-# t2path.part2is 103
-# t3path.part2is 3509
-# inpath.part2is 0
+t1path.part2is 36
+t2path.part2is 103
+t3path.part2is 3509
+inpath.part2is 122134
 
 makeRunProc(day)
 
