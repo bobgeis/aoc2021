@@ -7,7 +7,7 @@ import lib/[bedrock]
 
 
 
-proc binBy*[T, U](ts: openArray[T], fn: proc (x: T): U {.closure.}): TableRef[U, seq[T]] =
+proc binBy*[T, U](ts: openArray[T], fn: proc (x: T): U {.closure.}): Table[U, seq[T]] =
   ## Given a sequence `ts`, and a proc `fn` that will turn the items of `ts` into something hashable, create a table that bins each of the items into subsequences using the value of returned from `fn`.
   ## Inspired by partition from https://github.com/jabbalaci/nimpykot/blob/master/src/pykot/functional.nim
   runnableExamples:
@@ -24,12 +24,9 @@ proc binBy*[T, U](ts: openArray[T], fn: proc (x: T): U {.closure.}): TableRef[U,
       words = @["sam", "so", "am", "alpine"]
       charTable = words.binBy(s => s[0])
     assert @["am", "alpine"] == charTable['a']
-  result = newTable[U, seq[T]]()
   for t in ts:
     let s = fn(t)
-    var v: seq[T] = result.getOrDefault(s, @[])
-    v.add t
-    result[s] = v
+    result.mgetorput(s,@[]).add t
 
 
 
@@ -193,7 +190,7 @@ macro importModules*(modules: static[openarray[string]], prefix: static[string] 
 ###
 
 when isMainModule:
-  import math, strutils
+  import std/[math, strutils, sugar, tables]
   import bedrock
 
   # this needs to be at the top level or trying to export will fail
@@ -219,6 +216,20 @@ when isMainModule:
   #   assert foo("3", 2, 3.0) == 8'i64
   #   foo.liftToMap3(fooMap)
   #   assert fooMap(@["3", "5"], @[2, 3], @[2.0, 10.0]) == @[7'i64, 18]
+
+  block:
+    let # example 1
+      digits = @[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      mod3 = digits.binBy(d => d mod 3)
+    assert @[2, 5, 8] == mod3[2]
+    let # example 2
+      pairs = @[@[1, 2], @[3, 1], @[5, 6], @[9, 5]]
+      mins = pairs.binBy(p => p.min)
+    assert @[@[5, 6], @[9, 5]] == mins[5]
+    let # example 3
+      words = @["sam", "so", "am", "alpine"]
+      charTable = words.binBy(s => s[0])
+    assert @["am", "alpine"] == charTable['a']
 
   block:
     type
