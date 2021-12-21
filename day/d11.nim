@@ -4,15 +4,42 @@ import lib/[imps]
 const day = "11"
 
 
-proc part0*(path: string): Seq2i[char] =
-  path.getLines.toseq2ichar
+proc part0*(path: string): Seq2i[int] =
+  path.withLines:
+    result.add line.toSeqChar.mapit(it.parseint)
 
-proc part1*(input: sink Seq2i[char]): int =
-  result = 0
+proc echoBoard(ss: Seq2i[int]) =
+  for row in ss:
+    echo row.join
+
+proc part1*(input: sink Seq2i[int]): int =
+  let bounds = [input[0].high, input.high]
+  for i in 1..100:
+    var
+      blinks: seq[Vec2i] = @[]
+      blinked = initHashSet[Vec2i]()
+    for x in 0..bounds.x:
+      for y in 0..bounds.y:
+        inc input[x,y]
+        if input[x,y] == 10:
+          blinks.add [x,y]
+    while blinks.len > 0:
+      let v = blinks.pop
+      for dir in dirs2d8:
+        let dv = dir + v
+        if not dv.aabb(ori2i,bounds): continue
+        if dv in blinked: continue
+        inc input[dv]
+        if input[dv] == 10:
+          blinks.add dv
+      blinked.incl v
+      inc result
+    for v in blinked:
+      input[ v.x, v.y ] = 0
 
 
 
-proc part2*(input: Seq2i[char]): int =
+proc part2*(input: sink Seq2i[int]): int =
   result = 0
 
 const
@@ -20,7 +47,7 @@ const
   t1path = inputPath(day,"t1")
 
 t1path.part1is 1656
-# inpath.part1is 0
+inpath.part1is 1585
 
 # t1path.part2is 0
 # inpath.part2is 0
