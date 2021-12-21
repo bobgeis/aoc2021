@@ -34,7 +34,7 @@ proc part1*(input: seq[string]): int =
       else:
         errs.add (expect[^1],c,idx,errscore[c],line)
         break
-  result = errs.reduce((acc:int,e) => acc + e[3],0)
+  result = errs.foldl(a + b[3],0)
 
 
 proc score(s:seq[char]):int =

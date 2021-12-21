@@ -30,7 +30,7 @@ proc part1*(input: (Set2i,seq[(string,int)])): int =
   result = input[0].fold(input[1][0]).len
 
 proc part2*(input: (Set2i,seq[(string,int)])): int =
-  let dots = input[1].reduce((ds:Set2i,f) => (ds.fold(f)), input[0])
+  let dots = input[1].foldl(a.fold(b), input[0])
   echo dots.drawset((v) => (if v in dots: '#' else: '.'))
 
 const

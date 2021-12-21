@@ -172,8 +172,14 @@ proc groupsOf*[T](s: seq[T], g: Positive): seq[seq[T]] =
       i = 0
   if sub.len > 0: result.add sub
 
-proc reduce*[T,U](ts:openArray[T],f:proc(u:U,t:T):U, base:U):U {.inline.} =
-  result = base
+proc reduce*[T](ts:openArray[T],f:proc(u,t:T):T):T {.inline.} =
+  ## Note that sequtils has foldl(sequence,operation,first), and is what you should prefer in general. Sometimes you'll want to pass a proc instead of foldl(p(a,b)).
+  result = ts[0]
+  for i in 1..ts.high: result = f(result,ts[i])
+
+proc reduce*[T,U](ts:openArray[T],f:proc(u:U,t:T):U, first:U):U {.inline.} =
+  ## Note that sequtils has foldl(sequence,operation,first), and is what you should prefer in general. Sometimes you'll want to pass a proc instead of foldl(p(a,b),first).
+  result = first
   for t in ts: result = f(result,t)
 
 when isMainModule:
