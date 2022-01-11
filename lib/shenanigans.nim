@@ -1,5 +1,5 @@
 
-
+## This file contains procs, templates, and macros for playing around and causing trouble. Some of these are taken or inspired by others (see links). Nothing here should be taken as best pratice or even a good idea. Use at your own risk.
 
 import std/[macros, monotimes, sequtils, strformat, tables, times, unittest]
 
